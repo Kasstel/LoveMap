@@ -23,7 +23,7 @@ export function Sidebar(){
         title="Пока пусто"
         hint="Нажми «+ Добавить воспоминание» и кликни на карту" />
       ) : (
-        <div className="mt-3 flex flex-col gap-1">
+        <div className="mt-3 flex flex-col gap-2">
           {memories.map((memory) => (
             <MemoryCard
               key={memory.id}

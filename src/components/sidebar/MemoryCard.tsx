@@ -28,7 +28,7 @@ export function MemoryCard({ memory, isActive, onSelect }: MemoryCardProps){
       type="button"
       onClick={() => onSelect(memory.id)}
       // рамка есть всегда (у неактивных прозрачная) — иначе при выделении карточка прыгала бы на 1px
-      className={`flex w-full gap-3 rounded-card border bg-surface p-2 text-left transition-colors ${
+      className={`flex w-full gap-3 rounded-card border bg-surface p-3 text-left transition-colors ${
         isActive ? 'border-primary-muted bg-tint' : 'border-transparent hover:bg-tint/60'
       }`}
     >
@@ -37,12 +37,12 @@ export function MemoryCard({ memory, isActive, onSelect }: MemoryCardProps){
           src={coverUrl}
           alt=""
           loading="lazy"
-          className="h-14 w-14 shrink-0 rounded-control border border-line object-cover"
+          className="h-16 w-16 shrink-0 rounded-control border border-line object-cover"
         />
       ) : (
         // цвет категории известен только во время работы — Tailwind не создаст для него класс, поэтому style
         <div
-          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-control border border-line text-2xl"
+          className="flex h-16 w-16 shrink-0 items-center justify-center rounded-control border border-line text-2xl"
           style={{ backgroundColor: category.color }}
         >
           {category.emoji}

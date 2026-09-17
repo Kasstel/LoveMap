@@ -51,8 +51,16 @@ function MainLayout() {
         </main>
         {/* тень — на внешней обёртке: clip-path у DeckleEdge обрезал бы box-shadow */}
         <aside className="relative z-10 w-80 shrink-0 shadow-panel">
-          <DeckleEdge edges={['left']} className="h-full overflow-y-auto bg-surface p-4">
-            <Sidebar/>
+          {/* внутренняя тень вдоль торца — эту DeckleEdge не обрезает: inset-тень не выходит за свою же рамку */}
+          <DeckleEdge
+            edges={['left']}
+            className="relative h-full bg-surface shadow-[inset_10px_0_16px_-14px_rgba(74,0,17,0.4)]"
+          >
+            {/* текстура — в нескроллящемся слое: внутри overflow-y-auto она уезжала бы вместе со списком */}
+            <PaperTexture opacity={0.32} className="pointer-events-none absolute inset-0 h-full w-full" />
+            <div className="relative h-full overflow-y-auto p-6">
+              <Sidebar/>
+            </div>
           </DeckleEdge>
         </aside>
       </div>

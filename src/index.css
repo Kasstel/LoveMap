@@ -65,7 +65,7 @@
 
 /* тонировка только тайлов: на .leaflet-container под фильтр попали бы пины, попапы и контролы */
 .leaflet-tile-pane {
-  filter: sepia(.45) saturate(.45) hue-rotate(-12deg) contrast(.92) brightness(1.06);
+  filter: sepia(.75) saturate(.35) hue-rotate(-10deg) contrast(.85) brightness(1.08);
 }
 
 .leaflet-container .leaflet-control-zoom.leaflet-bar {
