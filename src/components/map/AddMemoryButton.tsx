@@ -1,5 +1,6 @@
 import { useMapStore } from "../../stores/mapStore";
 
+
 export function AddMemoryButton(){
   const isAddingMode = useMapStore((state)=> state.isAddingMode)
   const setAddingMode = useMapStore((state)=> state.setAddingMode)
@@ -24,11 +25,12 @@ export function AddMemoryButton(){
       <button
         type="button"
         onClick={isAddingMode ? handleCancel : handleStart}
-        className={`rounded-full px-4 py-2 text-sm font-medium shadow-panel ${
-  isAddingMode ? 'bg-surface text-primary' : 'bg-primary text-on-primary'
+        className={`rounded-full px-10 py-2 text-sm font-medium shadow-panel  ${
+  isAddingMode ? 'bg-[#4A0011] text-on-primary' : 'bg-[#4A0011] text-on-primary'
 }`}
       >
-        {isAddingMode ? 'Отмена' : '+Добавить воспоминание'}
+        
+        {isAddingMode ? 'Отмена' : '+ Добавить воспоминание'}
       </button>
     </div>
   )

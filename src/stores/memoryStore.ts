@@ -7,6 +7,9 @@ type MemoryWithPhotos = Memory & { memory_photos: MemoryPhoto[] }
 
 interface MemoryStore{
   couple: CoupleInfo | null
+  // для какого user.id уже отработал fetchCouple. null — ещё не проверяли:
+  // App по этому полю отличает «пары нет» от «ответ ещё не пришёл» и не пускает на /setup раньше времени
+  coupleCheckedFor: string | null
   memories: Memory[]
   photos: Record<string, MemoryPhoto[]>   // ключ — memoryId
   loading: boolean
@@ -38,8 +41,9 @@ interface MemoryStore{
 }
 
 // Pick сохраняет точные типы: без него TS вывел бы memories как never[]
-const initialState: Pick<MemoryStore, 'couple' | 'memories' | 'photos' | 'loading' | 'error'> = {
+const initialState: Pick<MemoryStore, 'couple' | 'coupleCheckedFor' | 'memories' | 'photos' | 'loading' | 'error'> = {
   couple: null,
+  coupleCheckedFor: null,
   memories: [],
   photos: {},
   loading: false,
@@ -50,6 +54,9 @@ export const useMemoryStore= create<MemoryStore>((set, get)=> ({
   ...initialState,
 
   fetchCouple: async() => { set({loading: true, error: null})
+    // id держим снаружи try: он нужен и в catch, чтобы пометить проверку выполненной
+    // и не оставить App в бесконечной «Загрузке»
+    let checkedUserId: string | null = null
     try {
       const { data: {user} } = await supabase.auth.getUser()
       if (!user) {
@@ -59,6 +66,7 @@ export const useMemoryStore= create<MemoryStore>((set, get)=> ({
         })
         return
       }
+      checkedUserId = user.id
 
 
       const {data: member, error} = await supabase.from('couple_members').select('couple_id').eq('user_id', user.id).maybeSingle()
@@ -70,7 +78,8 @@ export const useMemoryStore= create<MemoryStore>((set, get)=> ({
       if (!member) {
         set({
           loading: false,
-          couple: null
+          couple: null,
+          coupleCheckedFor: checkedUserId
         })
         return
       }
@@ -83,12 +92,14 @@ export const useMemoryStore= create<MemoryStore>((set, get)=> ({
 
       set({
         loading: false,
-        couple: couple
+        couple: couple,
+        coupleCheckedFor: checkedUserId
       })
     }
     catch(error){
       set({
         loading: false,
+        coupleCheckedFor: checkedUserId,
         error: error instanceof Error ? error.message : 'Не получилось найти пару:('
       })
     }

@@ -2,6 +2,9 @@ import { useState } from "react"
 import { useAuthStore } from "../../stores/authStore"
 import { InkFrame } from "../shared/InkFrame"
 import { PaperTexture } from "../shared/PaperTexture"
+import { VelvetField } from "../shared/VelvetField"
+import { VelvetButton } from "../shared/VelvetButton"
+import { InkLoader } from "../shared/InkLoader"
 
 function AuthPage() {
   const [email, setEmail] = useState('')
@@ -35,9 +38,9 @@ function AuthPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,var(--color-velvet),var(--color-velvet-deep))] px-4">
-      <PaperTexture />
-
+    <div className="bg-velvet-page relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+      <PaperTexture variant="velvet" />
+      
       {/* угловые орнаменты: один и тот же рисунок, зеркалим по осям под остальные три угла */}
       <InkFrame variant="corner" className="absolute left-6 top-6 h-16 w-16 text-on-velvet-muted/70" />
       <InkFrame variant="corner" className="absolute right-6 top-6 h-16 w-16 -scale-x-100 text-on-velvet-muted/70" />
@@ -47,37 +50,27 @@ function AuthPage() {
       <div className="relative w-full max-w-sm text-center">
         <h1 className="font-display text-4xl text-on-velvet">Love Map</h1>
 
-        <form onSubmit={handleSubmit} className="mt-10 text-left">
-          <label className="block">
-            <span className="sr-only">Email</span>
-            <input
-              type="email"
-              className="w-full border-b border-on-velvet-muted/40 bg-transparent py-2 text-on-velvet placeholder:text-on-velvet-muted focus:border-on-velvet focus:outline-none"
-              placeholder="Email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </label>
-          <label className="mt-5 block">
-            <span className="sr-only">Пароль</span>
-            <input
-              type="password"
-              className="w-full border-b border-on-velvet-muted/40 bg-transparent py-2 text-on-velvet placeholder:text-on-velvet-muted focus:border-on-velvet focus:outline-none"
-              placeholder="Пароль"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </label>
+        <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-4 text-left">
+          <VelvetField
+            label="Почта"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+          <VelvetField
+            label="Пароль"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
 
-          {formError && <p className="mt-3 text-sm text-danger-soft">{formError}</p>}
+          {formError && <p className="text-sm text-danger-soft">{formError}</p>}
 
-          <button
-            type="submit"
-            className="mt-8 w-full rounded-control bg-primary py-2 text-on-primary disabled:bg-primary-disabled"
-            disabled={submitting}
-          >
+          <VelvetButton type="submit" className="mt-8" disabled={submitting}>
             {submitting ? 'Секунду...' : isRegister ? 'Зарегистрироваться' : 'Войти'}
-          </button>
+          </VelvetButton>
 
           <button
             type="button"
@@ -85,7 +78,7 @@ function AuthPage() {
             className="mt-5 flex w-full flex-col items-center text-sm text-on-velvet-muted"
           >
             <span>{isRegister ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Регистрация'}</span>
-            <InkFrame variant="underline" className="mt-1 h-3 w-44 text-on-velvet-muted" />
+            
           </button>
         </form>
       </div>

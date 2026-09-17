@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { useMemoryStore } from '../../stores/memoryStore'
 import { toDateInputValue } from '../../utils/dates'
 import { INVITE_CODE_LENGTH, normalizeInviteCode } from '../../utils/invite'
-
-const fieldClassName = 'mt-1 w-full rounded-control border border-line px-3 py-2'
+import { InkFrame } from '../shared/InkFrame'
+import { PaperTexture } from '../shared/PaperTexture'
+import { VelvetField } from '../shared/VelvetField'
+import { VelvetButton } from '../shared/VelvetButton'
 
 function WelcomeScreen() {
   const [partner1, setPartner1] = useState('')
@@ -45,92 +47,81 @@ function WelcomeScreen() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-tint px-4">
-      <div className="w-full max-w-sm rounded-panel bg-surface p-8 shadow-panel">
-        <h1 className="font-display text-2xl font-semibold text-primary">Добро пожаловать 💕</h1>
-        <p className="mt-2 text-sm text-ink-subtle">
+    <div className="bg-velvet-page relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+      <PaperTexture variant="velvet" />
+
+      {/* угловые орнаменты: один и тот же рисунок, зеркалим по осям под остальные три угла */}
+      <InkFrame variant="corner" className="absolute top-6 left-6 h-16 w-16 text-on-velvet-muted/70" />
+      <InkFrame variant="corner" className="absolute top-6 right-6 h-16 w-16 -scale-x-100 text-on-velvet-muted/70" />
+      <InkFrame variant="corner" className="absolute bottom-6 left-6 h-16 w-16 -scale-y-100 text-on-velvet-muted/70" />
+      <InkFrame variant="corner" className="absolute right-6 bottom-6 h-16 w-16 -scale-x-100 -scale-y-100 text-on-velvet-muted/70" />
+
+      <div className="relative w-full max-w-sm text-center">
+        <h1 className="font-display text-3xl text-on-velvet">Добро пожаловать</h1>
+        <p className="mt-2 text-sm text-on-velvet-muted">
           {mode === 'create' ? 'Расскажите немного о вашей паре' : 'Введи код, который прислал партнёр'}
         </p>
 
         {mode === 'create' && (
-          <form onSubmit={handleSubmit} className="mt-6">
-            <label className="block text-sm text-ink-muted">
-              Первый партнёр
-              <input
-                type="text"
-                required
-                value={partner1}
-                onChange={(event) => setPartner1(event.target.value)}
-                placeholder="Имя"
-                className={fieldClassName}
-              />
-            </label>
+          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4 text-left">
+            <VelvetField
+              label="Первый партнёр"
+              type="text"
+              required
+              value={partner1}
+              onChange={(event) => setPartner1(event.target.value)}
+              placeholder="Имя"
+            />
 
-            <label className="mt-3 block text-sm text-ink-muted">
-              Второй партнёр
-              <input
-                type="text"
-                required
-                value={partner2}
-                onChange={(event) => setPartner2(event.target.value)}
-                placeholder="Имя"
-                className={fieldClassName}
-              />
-            </label>
+            <VelvetField
+              label="Второй партнёр"
+              type="text"
+              required
+              value={partner2}
+              onChange={(event) => setPartner2(event.target.value)}
+              placeholder="Имя"
+            />
 
-            <label className="mt-3 block text-sm text-ink-muted">
-              Вместе с
-              <input
-                type="date"
-                required
-                max={today}
-                value={startDate}
-                onChange={(event) => setStartDate(event.target.value)}
-                className={fieldClassName}
-              />
-            </label>
+            <VelvetField
+              label="Вместе с"
+              type="date"
+              required
+              max={today}
+              value={startDate}
+              onChange={(event) => setStartDate(event.target.value)}
+            />
 
-            {visibleError && <p className="mt-3 text-sm text-danger">{visibleError}</p>}
+            {visibleError && <p className="text-sm text-danger-soft">{visibleError}</p>}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-5 w-full rounded-control bg-primary py-2 text-on-primary disabled:bg-primary-disabled"
-            >
+            <VelvetButton type="submit" className="mt-2" disabled={loading}>
               {loading ? 'Секунду...' : 'Начать'}
-            </button>
+            </VelvetButton>
           </form>
         )}
 
         {mode === 'join' && (
-          <form onSubmit={handleJoin} className="mt-6">
-            <label className="block text-sm text-ink-muted">
-              Код от партнёра
-              <input
-                required
-                // minLength: браузер сам скажет «слишком короткий», не отправляя запрос.
-                // maxLength не ставим: браузер обрезал бы вставленное сообщение до 8 символов
-                // («Присоеди») ещё до onChange, и код из него было бы не достать
-                minLength={INVITE_CODE_LENGTH}
-                value={inviteCode}
-                onChange={(event) => setInviteCode(normalizeInviteCode(event.target.value))}
-                autoComplete="off"
-                autoCapitalize="characters"
-                spellCheck={false}
-                placeholder="K7MQ4XRP"
-                className={`${fieldClassName} text-center font-mono text-lg tracking-widest`}
-              />
-            </label>
+          <form onSubmit={handleJoin} className="mt-8 flex flex-col gap-4 text-left">
+            <VelvetField
+              label="Код от партнёра"
+              required
+              // minLength: браузер сам скажет «слишком короткий», не отправляя запрос.
+              // maxLength не ставим: браузер обрезал бы вставленное сообщение до 8 символов
+              // («Присоеди») ещё до onChange, и код из него было бы не достать
+              minLength={INVITE_CODE_LENGTH}
+              value={inviteCode}
+              onChange={(event) => setInviteCode(normalizeInviteCode(event.target.value))}
+              autoComplete="off"
+              autoCapitalize="characters"
+              spellCheck={false}
+              placeholder="K7MQ4XRP"
+              inputClassName="text-center font-mono text-lg tracking-widest"
+            />
 
-            {visibleError && <p className="mt-3 text-sm text-danger">{visibleError}</p>}
+            {visibleError && <p className="text-sm text-danger-soft">{visibleError}</p>}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-5 w-full rounded-control bg-primary py-2 text-on-primary disabled:bg-primary-disabled"
-            >
+            <VelvetButton type="submit" className="mt-2" disabled={loading}>
               {loading ? 'Секунду...' : 'Присоединиться'}
-            </button>
+            </VelvetButton>
           </form>
         )}
 
@@ -138,9 +129,10 @@ function WelcomeScreen() {
           type="button"
           onClick={handleToggleMode}
           disabled={loading}
-          className="mt-3 w-full text-sm text-primary-muted hover:text-primary disabled:opacity-50"
+          className="mt-5 flex w-full flex-col items-center text-sm text-on-velvet-muted disabled:opacity-50"
         >
-          {mode === 'create' ? 'У меня есть код от партнёра' : 'Создать новую пару'}
+          <span>{mode === 'create' ? 'У меня есть код от партнёра' : 'Создать новую пару'}</span>
+          <InkFrame variant="underline" className="mt-1 h-3 w-52 text-on-velvet-muted" />
         </button>
       </div>
     </div>

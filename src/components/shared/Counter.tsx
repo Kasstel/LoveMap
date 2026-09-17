@@ -9,9 +9,10 @@ export const Counter = ()=>{
   if (counter === null) return null
   const couple_time = pluralizeDays(counter)
   return(
-    <div className="flex items-baseline gap-1">
-      <span className="font-hand text-2xl leading-none text-ink">{counter}</span>
-      <span className="text-xs text-ink-subtle">{couple_time}</span>
+    // счётчик живёт под картой на бархате — отсюда и цвета
+    <div className="flex items-baseline justify-center gap-1.5">
+      <span className="font-hand text-3xl leading-none text-on-velvet">{counter}</span>
+      <span className="font-hand text-on-velvet-muted">{couple_time} вместе</span>
     </div>
   )
 }

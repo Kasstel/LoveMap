@@ -11,12 +11,14 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",
+    "clsx": "^2.1.1",
     "heic-to": "^1.5.2",
     "leaflet": "^1.9.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.18.1",
+    "tailwind-merge": "^3.7.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {

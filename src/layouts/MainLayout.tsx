@@ -8,6 +8,8 @@ import { MemoryFormModal } from "../components/map/MemoryFormModal"
 import { Sidebar } from "../components/sidebar/Sidebar"
 import { PaperTexture } from "../components/shared/PaperTexture"
 import { DeckleEdge } from "../components/shared/DeckleEdge"
+import { PassePartout } from "../components/shared/PassePartout"
+import { Counter } from "../components/shared/Counter"
 
 // TODO: Header + карта + sidebar (Этап 1-2)
 function MainLayout() {
@@ -33,36 +35,41 @@ function MainLayout() {
     return unsubscribe
   }, [coupleId, fetchMemories, subscribeToChanges])
   return (
-    // мягкий смещённый радиальный градиент вместо плоской заливки — лист под лампой, а не залитый цвет
-    <div
-      className="flex h-screen flex-col"
-      style={{ background: 'radial-gradient(120% 100% at 32% 22%, var(--color-surface) 0%, var(--color-paper) 65%)' }}
-    >
-      <PaperTexture />
-      <Header />
-      <div className="flex min-h-0 flex-1">
-        {/* 20px паспарту: вокруг карты виден текстурный paper-фон, будто фото вклеено в альбом */}
-        <main className="relative flex-1 p-5">
-          {/* свой positioned-контекст для AddMemoryButton — иначе top/right считались бы от внешнего края паспарту, а не от самой карты */}
-          <div className="relative h-full w-full">
-            <MapView />
-            <AddMemoryButton/>
-          </div>
-        </main>
-        {/* тень — на внешней обёртке: clip-path у DeckleEdge обрезал бы box-shadow */}
-        <aside className="relative z-10 w-80 shrink-0 shadow-panel">
-          {/* внутренняя тень вдоль торца — эту DeckleEdge не обрезает: inset-тень не выходит за свою же рамку */}
-          <DeckleEdge
-            edges={['left']}
-            className="relative h-full bg-surface shadow-[inset_10px_0_16px_-14px_rgba(74,0,17,0.4)]"
-          >
-            {/* текстура — в нескроллящемся слое: внутри overflow-y-auto она уезжала бы вместе со списком */}
-            <PaperTexture opacity={0.32} className="pointer-events-none absolute inset-0 h-full w-full" />
-            <div className="relative h-full overflow-y-auto p-6">
-              <Sidebar/>
+    // бархат на всю страницу — направление kiss.jpg; светлая карта на бордовом и есть приём.
+    // фон и текстура — те же, что на AuthPage (.bg-velvet-page), чтобы экраны не расходились по тону
+    <div className="bg-velvet-page relative h-screen overflow-hidden">
+      <PaperTexture variant="velvet" />
+      <PassePartout />
+
+      {/* цепочку высот не рвём: h-screen → flex-1 → min-h-0, отступы паспарту висят здесь, а не на MapContainer */}
+      <div className="relative flex h-full flex-col px-9 py-9">
+        <Header />
+        <div className="flex min-h-0 flex-1 gap-6">
+          <main className="flex min-h-0 flex-1 flex-col">
+            {/* свой positioned-контекст для AddMemoryButton — иначе top/right считались бы от края паспарту, а не от самой карты */}
+            <div className="relative min-h-0 flex-1">
+              <MapView />
+              <AddMemoryButton/>
             </div>
-          </DeckleEdge>
-        </aside>
+            <div className="pt-4 text-center">
+              <Counter/>
+            </div>
+          </main>
+          {/* тень — на внешней обёртке: clip-path у DeckleEdge обрезал бы box-shadow */}
+          <aside className="relative z-10 w-80 shrink-0 shadow-modal">
+            {/* внутренняя тень вдоль торца — эту DeckleEdge не обрезает: inset-тень не выходит за свою же рамку */}
+            <DeckleEdge
+              edges={['left']}
+              className="relative h-full bg-surface shadow-[inset_10px_0_16px_-14px_rgba(74,0,17,0.4)]"
+            >
+              {/* текстура — в нескроллящемся слое: внутри overflow-y-auto она уезжала бы вместе со списком */}
+              <PaperTexture opacity={0.32} className="pointer-events-none absolute inset-0 h-full w-full" />
+              <div className="relative h-full overflow-y-auto p-6">
+                <Sidebar/>
+              </div>
+            </DeckleEdge>
+          </aside>
+        </div>
       </div>
       {newPinCoords && (
         <MemoryFormModal coords={newPinCoords} onClose={() => setNewPinCoords(null)}/>
