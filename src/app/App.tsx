@@ -6,6 +6,7 @@ import { useMapStore } from '../stores/mapStore'
 import AuthPage from '../components/auth/AuthPage'
 import WelcomeScreen from '../components/setup/WelcomeScreen'
 import MainLayout from '../layouts/MainLayout'
+import { PaperTexture } from '../components/shared/PaperTexture'
 
 function App() {
   const user = useAuthStore((state) => state.user)
@@ -47,8 +48,9 @@ function App() {
 
   if (authLoading || (user && !coupleChecked)) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-tint">
-        <p className="text-primary-muted">Загрузка...</p>
+      <div className="relative flex min-h-screen items-center justify-center bg-paper">
+        <PaperTexture />
+        <p className="relative text-primary-muted">Загрузка...</p>
       </div>
     )
   }

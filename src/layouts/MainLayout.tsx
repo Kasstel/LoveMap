@@ -6,6 +6,8 @@ import { AddMemoryButton } from "../components/map/AddMemoryButton"
 import { useMapStore } from "../stores/mapStore"
 import { MemoryFormModal } from "../components/map/MemoryFormModal"
 import { Sidebar } from "../components/sidebar/Sidebar"
+import { PaperTexture } from "../components/shared/PaperTexture"
+import { DeckleEdge } from "../components/shared/DeckleEdge"
 
 // TODO: Header + карта + sidebar (Этап 1-2)
 function MainLayout() {
@@ -31,15 +33,27 @@ function MainLayout() {
     return unsubscribe
   }, [coupleId, fetchMemories, subscribeToChanges])
   return (
-    <div className="flex h-screen flex-col bg-tint">
+    // мягкий смещённый радиальный градиент вместо плоской заливки — лист под лампой, а не залитый цвет
+    <div
+      className="flex h-screen flex-col"
+      style={{ background: 'radial-gradient(120% 100% at 32% 22%, var(--color-surface) 0%, var(--color-paper) 65%)' }}
+    >
+      <PaperTexture />
       <Header />
       <div className="flex min-h-0 flex-1">
-        <main className="relative flex-1">
-          <MapView />
-          <AddMemoryButton/>
+        {/* 20px паспарту: вокруг карты виден текстурный paper-фон, будто фото вклеено в альбом */}
+        <main className="relative flex-1 p-5">
+          {/* свой positioned-контекст для AddMemoryButton — иначе top/right считались бы от внешнего края паспарту, а не от самой карты */}
+          <div className="relative h-full w-full">
+            <MapView />
+            <AddMemoryButton/>
+          </div>
         </main>
-        <aside className="overflow-y-auto w-80 border-l border-line-soft bg-surface p-4">
-          <Sidebar/>
+        {/* тень — на внешней обёртке: clip-path у DeckleEdge обрезал бы box-shadow */}
+        <aside className="relative z-10 w-80 shrink-0 shadow-panel">
+          <DeckleEdge edges={['left']} className="h-full overflow-y-auto bg-surface p-4">
+            <Sidebar/>
+          </DeckleEdge>
         </aside>
       </div>
       {newPinCoords && (

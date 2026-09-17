@@ -51,15 +51,17 @@ export type NewMemory = Pick<
   'title' | 'description' | 'date' | 'category' | 'emoji' | 'lat' | 'lng'
 >
 
+// приглушённая чернильная гамма одной насыщенности (раздел «Категории» в CLAUDE.md);
+// белый текст на плашках — не color-on-primary, а отдельный #FBF5EA по той же спецификации
 export const CATEGORY_MAP: Record<
   MemoryCategory,
   { emoji: string; label: string; color: string }
 > = {
-  date: { emoji: '💕', label: 'Свидание', color: '#f472b6' },
-  travel: { emoji: '✈️', label: 'Путешествие', color: '#60a5fa' },
-  food: { emoji: '🍽️', label: 'Еда', color: '#fb923c' },
-  concert: { emoji: '🎵', label: 'Концерт', color: '#a78bfa' },
-  home: { emoji: '🏠', label: 'Дом', color: '#4ade80' },
-  adventure: { emoji: '🏔️', label: 'Приключение', color: '#facc15' },
-  milestone: { emoji: '⭐', label: 'Веха', color: '#f87171' },
+  date: { emoji: '💕', label: 'Свидание', color: '#8C3350' },      // винный: сливовый #6E3B55 сливался с concert и travel под сепией
+  travel: { emoji: '✈️', label: 'Путешествие', color: '#3E5068' }, // индиго
+  food: { emoji: '🍽️', label: 'Еда', color: '#B08544' },           // охра
+  concert: { emoji: '🎵', label: 'Концерт', color: '#594271' },    // приглушённый фиолетовый
+  home: { emoji: '🏠', label: 'Дом', color: '#6B7043' },           // оливковый
+  adventure: { emoji: '🏔️', label: 'Приключение', color: '#3C674B' }, // хвойный зелёный
+  milestone: { emoji: '⭐', label: 'Веха', color: '#A63A2B' },     // кирпичный
 }

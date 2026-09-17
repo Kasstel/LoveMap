@@ -9,9 +9,9 @@ export const Counter = ()=>{
   if (counter === null) return null
   const couple_time = pluralizeDays(counter)
   return(
-    <>
-      {counter}{couple_time}
-    </>
+    <div className="flex items-baseline gap-1">
+      <span className="font-hand text-2xl leading-none text-ink">{counter}</span>
+      <span className="text-xs text-ink-subtle">{couple_time}</span>
+    </div>
   )
-  
 }

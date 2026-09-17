@@ -28,7 +28,7 @@ export function MemoryCard({ memory, isActive, onSelect }: MemoryCardProps){
       type="button"
       onClick={() => onSelect(memory.id)}
       // рамка есть всегда (у неактивных прозрачная) — иначе при выделении карточка прыгала бы на 1px
-      className={`flex w-full gap-3 rounded-card border p-2 text-left transition-colors ${
+      className={`flex w-full gap-3 rounded-card border bg-surface p-2 text-left transition-colors ${
         isActive ? 'border-primary-muted bg-tint' : 'border-transparent hover:bg-tint/60'
       }`}
     >
@@ -37,12 +37,12 @@ export function MemoryCard({ memory, isActive, onSelect }: MemoryCardProps){
           src={coverUrl}
           alt=""
           loading="lazy"
-          className="h-14 w-14 shrink-0 rounded-control object-cover"
+          className="h-14 w-14 shrink-0 rounded-control border border-line object-cover"
         />
       ) : (
         // цвет категории известен только во время работы — Tailwind не создаст для него класс, поэтому style
         <div
-          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-control text-2xl"
+          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-control border border-line text-2xl"
           style={{ backgroundColor: category.color }}
         >
           {category.emoji}
@@ -51,10 +51,18 @@ export function MemoryCard({ memory, isActive, onSelect }: MemoryCardProps){
 
       {/* min-w-0: без него длинное название растянет карточку, и truncate не сработает */}
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-semibold text-ink">{memory.title}</div>
-        <div className="mt-0.5 text-xs text-ink-subtle">
-          {category.emoji} {formatDate(memory.date)}
-        </div>
+        <div className="truncate font-display text-sm text-ink">{memory.title}</div>
+        <div className="mt-0.5 text-xs text-ink-muted">{formatDate(memory.date)}</div>
+
+        <div className="mt-1.5 border-t border-line-soft" />
+
+        <span
+          className="mt-1.5 inline-block rounded-control px-1.5 py-0.5 text-[10px] leading-none"
+          style={{ backgroundColor: category.color, color: '#FBF5EA' }}
+        >
+          {category.label}
+        </span>
+
         {memory.description && (
           <div className="mt-1 line-clamp-2 text-xs text-ink-muted">{memory.description}</div>
         )}

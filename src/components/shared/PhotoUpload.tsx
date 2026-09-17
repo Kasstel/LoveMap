@@ -72,10 +72,10 @@ export function PhotoUpload({photos, onChange, maxPhotos=10, disabled = false, o
   return(
     <div>
       <div>
-        <label onDragOver={handleDragOver} onDragLeave={() => setIsDragging(false)}  onDrop={handleDragDrop}className={`block cursor-pointer rounded-card border-2 border-dashed p-4 text-center text-sm text-ink-subtle ${
-  isDragging ? 'border-primary-muted bg-tint' : 'border-line'
+        <label onDragOver={handleDragOver} onDragLeave={() => setIsDragging(false)}  onDrop={handleDragDrop}className={`block cursor-pointer rounded-card border-2 border-dashed p-4 text-center text-sm text-ink-muted ${
+  isDragging ? 'border-primary bg-tint' : 'border-line'
 }`}>
-          <span className="pointer-events-none">{processing ? 'Обрабатываем фото...' : '📷 Нажми или перетащи фото сюда'}
+          <span className="pointer-events-none">{processing ? 'Обрабатываем фото...' : 'Нажми или перетащи фото сюда'}
           </span> <input
             type="file"
             accept="image/*"

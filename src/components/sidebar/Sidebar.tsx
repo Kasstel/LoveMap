@@ -1,6 +1,7 @@
 import { useMapStore } from "../../stores/mapStore";
 import { useMemoryStore } from "../../stores/memoryStore";
 import { EmptyState } from "../shared/EmptyState";
+import { InkFrame } from "../shared/InkFrame";
 import { MemoryCard } from "./MemoryCard";
 
 export function Sidebar(){
@@ -11,8 +12,11 @@ export function Sidebar(){
 
   return(
     <>
-      <h2>Воспоминания</h2>
-      <h3>Сейчас у вас {memories.length}</h3>
+      <div>
+        <h2 className="font-display text-xl text-ink">Воспоминания</h2>
+        <InkFrame variant="underline" className="mt-1 h-2.5 w-28 text-ink-faint" />
+        <p className="mt-2 text-sm text-ink-subtle">Сейчас у вас {memories.length}</p>
+      </div>
 
       {memories.length === 0 ? (
         <EmptyState icon="🗺️"

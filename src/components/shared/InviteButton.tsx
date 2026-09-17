@@ -53,12 +53,10 @@ export function InviteButton() {
       type="button"
       onClick={handleInvite}
       title="Отправить код партнёру"
-      className="rounded-control border border-line px-3 py-1 text-sm text-primary hover:bg-tint"
+      className="rounded-control border border-line px-3 py-1 text-sm text-ink-soft hover:bg-tint"
     >
-      {copied ? 'Скопировано ✓' : (
-        <>
-          💌 <span className="font-mono tracking-wider">{code}</span>
-        </>
+      {copied ? 'Скопировано' : (
+        <span className="font-mono tracking-wider">{code}</span>
       )}
     </button>
   )

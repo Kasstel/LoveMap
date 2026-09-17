@@ -53,16 +53,15 @@ export function MemoryPopup({ memory }: MemoryPopupProps) {
 
   return (
     <div className="w-56">
-      <div
-        className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-white"
-        style={{ backgroundColor: category.color }}
+      <span
+        className="inline-block rounded-control px-1.5 py-0.5 text-[10px] leading-none"
+        style={{ backgroundColor: category.color, color: '#FBF5EA' }}
       >
-        <span>{category.emoji}</span>
-        <span>{category.label}</span>
-      </div>
+        {category.label}
+      </span>
 
-      <div className="mt-2 text-base font-semibold text-ink">{memory.title}</div>
-      <div className="mt-0.5 text-xs text-ink-subtle">{formatDate(memory.date)}</div>
+      <div className="mt-2 font-display text-base text-ink">{memory.title}</div>
+      <div className="mt-0.5 text-xs text-ink-muted">{formatDate(memory.date)}</div>
 
       {memory.description && (
         <div className="mt-2 text-sm whitespace-pre-line text-ink-soft">{memory.description}</div>
@@ -80,7 +79,7 @@ export function MemoryPopup({ memory }: MemoryPopupProps) {
               src={photos[0].url}
               alt={memory.title}
               loading="lazy"
-              className="h-32 w-full rounded-control object-cover"
+              className="h-32 w-full rounded-control border border-line object-cover"
             />
           </button>
 
@@ -98,7 +97,7 @@ export function MemoryPopup({ memory }: MemoryPopupProps) {
                     src={photo.url}
                     alt=""
                     loading="lazy"
-                    className="h-12 w-12 rounded object-cover"
+                    className="h-12 w-12 rounded-control border border-line object-cover"
                   />
                 </button>
               ))}
@@ -116,13 +115,13 @@ export function MemoryPopup({ memory }: MemoryPopupProps) {
         />
       )}
 
-      <div className="mt-3 flex justify-between border-t border-muted pt-2">
+      <div className="mt-3 flex justify-between border-t border-line-soft pt-2">
         <button
           type="button"
           // экшен прямо из getState: попапу не нужно перерисовываться из-за mapStore
           onClick={() => useMapStore.getState().setEditingMemoryId(memory.id)}
           disabled={deleting}
-          className="rounded-md px-2 py-1 text-xs text-primary hover:bg-tint disabled:opacity-50"
+          className="rounded-control border border-line px-2 py-1 text-xs text-ink-soft hover:bg-tint disabled:opacity-50"
         >
           Изменить
         </button>
@@ -130,7 +129,7 @@ export function MemoryPopup({ memory }: MemoryPopupProps) {
           type="button"
           onClick={handleDelete}
           disabled={deleting}
-          className="rounded-md px-2 py-1 text-xs text-danger hover:bg-danger-soft disabled:opacity-50"
+          className="rounded-control border border-line px-2 py-1 text-xs text-danger hover:bg-danger-soft disabled:opacity-50"
         >
           {deleting ? 'Удаляем...' : 'Удалить'}
         </button>

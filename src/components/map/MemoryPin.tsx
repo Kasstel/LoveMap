@@ -1,8 +1,8 @@
 import { Marker, Popup, useMap } from 'react-leaflet'
-import { CATEGORY_MAP, type Memory } from '../../types'
+import type { Memory } from '../../types'
 import { useEffect, useMemo, useRef } from 'react'
 import { MemoryPopup } from './MemoryPopup'
-import { createEmojiIcon } from '../../utils/mapIcons'
+import { createCategoryIcon } from '../../utils/mapIcons'
 import type { Marker as LeafletMarker } from 'leaflet'
 import { useMapStore } from '../../stores/mapStore'
 
@@ -19,9 +19,7 @@ export function MemoryPin({ memory }: MemoryPinProps) {
   const isActive = useMapStore((state) => state.activeMemoryId === memory.id)
   const setActiveMemoryId = useMapStore((state) => state.setActiveMemoryId)
 
-  const emoji = CATEGORY_MAP[memory.category].emoji
-  const icon = useMemo(()=> createEmojiIcon(emoji), [emoji])
-
+  const icon = useMemo(()=> createCategoryIcon(memory.category, isActive), [memory.category, isActive])
 
 
   useEffect(()=>{

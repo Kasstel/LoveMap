@@ -1,51 +1,136 @@
 @import "tailwindcss";
 
 /*
-  Дизайн-токены Love Map.
+  Дизайн-токены Love Map — направление «бумажная открытка / леттерпресс».
   Компоненты используют только эти имена (bg-primary, text-ink, rounded-panel...),
-  поэтому смена стиля — правка значений здесь, а не классов в каждом файле.
-  Сейчас значения повторяют исходную палитру Tailwind (rose / gray / red).
+  палитру Tailwind напрямую не использовать.
+
+  Шрифты подключены в index.html (Google Fonts, есть кириллица).
 
   Не токенизированы намеренно:
-  - цвета категорий — это данные (CATEGORY_MAP в src/types/index.ts)
+  - цвета категорий — это данные (CATEGORY_MAP в src/types/index.ts), пересобираются под палитру отдельно
   - затемнение и кнопки PhotoViewer (bg-black/90, bg-white/15) — они всегда поверх тёмного фона
-  - белый текст на плашках категорий
 */
 @theme {
-  /* --- акцент --- */
-  --color-primary: oklch(64.5% 0.246 16.439);          /* rose-500: главные кнопки, заголовки */
-  --color-primary-muted: oklch(71.2% 0.194 13.428);    /* rose-400: второстепенные ссылки, рамка активной карточки */
-  --color-primary-disabled: oklch(81% 0.117 11.638);   /* rose-300: фон неактивной главной кнопки */
-  --color-on-primary: #fff;                            /* текст на bg-primary */
+  /* --- поверхности: бумага поверх бумаги --- */
+  --color-paper: #F2E8D8;        /* фон приложения */
+  --color-surface: #FBF5EA;      /* карточки, панели, модалки */
+  --color-tint: #EADBC4;         /* ховер, выделение, активный пин */
+  --color-line: #C9B79A;
+  --color-line-soft: #DFD0B8;    /* разделители внутри карточек */
+  --color-muted: #7A5B4A;        /* тёплый, не серый */
 
-  /* --- поверхности и линии --- */
-  --color-surface: #fff;                               /* карточки, модалки, шапка, sidebar */
-  --color-tint: oklch(96.9% 0.015 12.422);             /* rose-50: фон страницы, наведение, активная карточка */
-  --color-line: oklch(89.2% 0.058 10.001);             /* rose-200: рамки полей и кнопок */
-  --color-line-soft: oklch(94.1% 0.03 12.58);          /* rose-100: разделители шапки и sidebar */
-  --color-muted: oklch(96.7% 0.003 264.542);           /* gray-100: заглушки загрузки, нейтральные разделители */
+  /* --- чернила --- */
+  --color-ink: #4A0011;
+  --color-ink-soft: #6E2430;
+  --color-ink-muted: #8A5A5E;
+  --color-ink-subtle: #A5837F;
+  --color-ink-faint: #C0A69B;
 
-  /* --- текст --- */
-  --color-ink: oklch(21% 0.034 264.665);               /* gray-900: заголовки карточек и попапов */
-  --color-ink-soft: oklch(37.3% 0.034 259.733);        /* gray-700: основной текст, описания */
-  --color-ink-muted: oklch(44.6% 0.03 256.802);        /* gray-600: подписи полей */
-  --color-ink-subtle: oklch(55.1% 0.027 264.364);      /* gray-500: вторичный текст, даты */
-  --color-ink-faint: oklch(70.7% 0.022 261.325);       /* gray-400: координаты, самое незаметное */
+  /* --- акцент: красные чернила --- */
+  --color-primary: #B3202C;
+  --color-primary-muted: #9A1B25;
+  --color-primary-disabled: #D8BDB6;
+  --color-on-primary: #FBF5EA;   /* НЕ #fff: чистый белый выбивается из бумаги */
 
-  /* --- состояния --- */
-  --color-danger: oklch(63.7% 0.237 25.331);           /* red-500: ошибки, удаление */
-  --color-danger-soft: oklch(97.1% 0.013 17.38);       /* red-50: фон при наведении на «Удалить» */
+  /* primary и danger в этой палитре оба красные и цветом не различаются —
+     разводим формой: primary — залитая кнопка, danger — контурная (border + текст) */
+  --color-danger: #7E1512;
+  --color-danger-soft: #E8CFC4;
 
   /* --- скругления --- */
-  --radius-control: 0.5rem;                            /* поля, кнопки, миниатюры */
-  --radius-card: 0.75rem;                              /* карточки списка, зона загрузки фото */
-  --radius-panel: 1rem;                                /* модалки и центральные панели форм */
+  --radius-control: 3px;
+  --radius-card: 5px;
+  --radius-panel: 8px;
 
-  /* --- тени --- */
-  --shadow-panel: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-modal: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  /* --- тени: леттерпресс, почти нет тени, есть лёгкий оттиск --- */
+  --shadow-panel: 0 1px 2px rgba(74,0,17,.07), 0 10px 28px -16px rgba(74,0,17,.18);
+  --shadow-modal: 0 2px 4px rgba(74,0,17,.10), 0 24px 48px -20px rgba(74,0,17,.28);
 
-  /* --- шрифты --- */
-  /* заголовки: пока совпадает с основным шрифтом, на этапе дизайна заменить */
-  --font-display: var(--font-sans);
+  /* --- бархат: только экран входа и WelcomeScreen (kiss.jpg), не бумага --- */
+  --color-velvet: #5A1420;        /* фон экрана входа */
+  --color-velvet-deep: #40101A;   /* виньетка по краям */
+  --color-on-velvet: #F2E7D5;     /* кремовый текст */
+  --color-on-velvet-muted: #C9A9A0;
+
+  /* --- шрифты: три, больше не добавлять, у всех есть кириллица --- */
+  --font-sans: 'Golos Text', ui-sans-serif, system-ui, sans-serif;   /* поля, кнопки, список, попап */
+  --font-display: 'Prata', ui-serif, Georgia, serif;                 /* заголовки, логотип — только regular */
+  --font-hand: 'Caveat', cursive;                                    /* счётчик дней, подписи под фото, дозированно */
+}
+
+/* --- Leaflet ---
+   leaflet.css не в слое и подключается позже, поэтому селекторы ниже
+   нарочно специфичнее его правил, а не полагаются на порядок */
+
+/* тонировка только тайлов: на .leaflet-container под фильтр попали бы пины, попапы и контролы */
+.leaflet-tile-pane {
+  filter: sepia(.45) saturate(.45) hue-rotate(-12deg) contrast(.92) brightness(1.06);
+}
+
+.leaflet-container .leaflet-control-zoom.leaflet-bar {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  box-shadow: none;
+  background-clip: border-box;
+}
+
+.leaflet-container .leaflet-control-zoom.leaflet-bar a {
+  background-color: var(--color-surface);
+  border-bottom-color: var(--color-line-soft);
+  color: var(--color-ink-soft);
+  font-family: var(--font-sans);
+  font-weight: 400;
+}
+
+.leaflet-container .leaflet-control-zoom.leaflet-bar a:hover,
+.leaflet-container .leaflet-control-zoom.leaflet-bar a:focus {
+  background-color: var(--color-tint);
+}
+
+.leaflet-container .leaflet-control-zoom.leaflet-bar a.leaflet-disabled {
+  background-color: var(--color-surface);
+  color: var(--color-ink-faint);
+}
+
+/* внутренний радиус = внешний минус толщина рамки, иначе фон кнопок вылезает за углы */
+.leaflet-container .leaflet-control-zoom.leaflet-bar a:first-child {
+  border-top-left-radius: calc(var(--radius-control) - 1px);
+  border-top-right-radius: calc(var(--radius-control) - 1px);
+}
+
+.leaflet-container .leaflet-control-zoom.leaflet-bar a:last-child {
+  border-bottom-left-radius: calc(var(--radius-control) - 1px);
+  border-bottom-right-radius: calc(var(--radius-control) - 1px);
+}
+
+/* фото, вклеенное в паспарту: внутренняя тень по краю карты тоном ink.
+   rounded-card задан классом MapContainer, тут только тень — overflow:hidden уже есть в самом leaflet.css */
+.leaflet-container {
+  box-shadow: inset 0 0 0 1px rgba(74, 0, 17, 0.08), inset 0 3px 16px rgba(74, 0, 17, 0.16);
+}
+
+/* бумажная карточка поверх карты вместо дефолтного белого попапа Leaflet */
+.leaflet-container .leaflet-popup-content-wrapper {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-panel);
+}
+
+/* тень только на карточке — на повёрнутом на 45° язычке она читалась бы отдельным пятном */
+.leaflet-container .leaflet-popup-tip {
+  background-color: var(--color-surface);
+  box-shadow: none;
+}
+
+.leaflet-container .leaflet-popup .leaflet-popup-close-button {
+  color: var(--color-ink-subtle);
+  text-decoration: none;
+}
+
+.leaflet-container .leaflet-popup .leaflet-popup-close-button:hover,
+.leaflet-container .leaflet-popup .leaflet-popup-close-button:focus {
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  outline: none; /* дефолтный синий focus-ring браузера выбивается из бумажной палитры */
 }
