@@ -52,7 +52,7 @@ export function InviteButton() {
     <button
       type="button"
       onClick={handleInvite}
-      title="Отправить код партнёру"
+      title="Отправь код партнёру чтобы он присоединился к твоей паре"
       className="rounded-control border border-on-velvet-muted/50 px-3 py-1 text-sm text-on-velvet-muted hover:border-on-velvet-muted"
     >
       {copied ? 'Скопировано' : (

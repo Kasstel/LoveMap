@@ -29,7 +29,6 @@ export function AddMemoryButton(){
   isAddingMode ? 'bg-[#4A0011] text-on-primary' : 'bg-[#4A0011] text-on-primary'
 }`}
       >
-        
         {isAddingMode ? 'Отмена' : '+ Добавить воспоминание'}
       </button>
     </div>

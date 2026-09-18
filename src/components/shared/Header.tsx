@@ -2,6 +2,8 @@ import { useState } from "react"
 import { useAuthStore } from "../../stores/authStore"
 import { useMemoryStore } from "../../stores/memoryStore"
 import { InviteButton } from "./InviteButton"
+import { PairedTitle } from "./PairedTitle"
+import { PlaylistSlot } from "./PlaylistSlot"
 
 export const Header = ()=>{
 
@@ -23,19 +25,34 @@ export const Header = ()=>{
 
   return(
     // шапка лежит прямо на бархате: ни фона, ни границы — их роль играет рамка паспарту
-    <header className="flex flex-wrap items-center justify-between gap-3 pb-6">
+    <header className="flex flex-wrap items-center justify-between gap-3 pb-1">
       {/* min-w-0 + truncate: длинные имена обрежутся многоточием, а не растолкают кнопки */}
-      <div className="min-w-0">
-        <div className="font-display text-xl text-on-velvet">Love Map</div>
-        {couple && (
-          <div className="truncate font-hand text-lg text-on-velvet-muted">
-            {couple.partner_1} <span className="text-danger-soft">и</span> {couple.partner_2}
-          </div>
-        )}
+      <div className="min-w-0 shrink">
+    {couple ? (
+      <PairedTitle
+        primary="Карта воспоминаний"
+        secondary={`${couple.partner_1} & ${couple.partner_2}`}
+        color="var(--color-on-velvet)"
+        primarySize={64}
+        secondarySize={72}
+        overlap={18}
+        shiftX={70}
+        knockout={3.5}
+        className="w-full max-w-[320px]"
+      />
+    ) : (
+      <div className="font-display text-xl text-on-velvet">Love Map</div>
+    )}
+
       </div>
+      
+      <PlaylistSlot src="/playlist/theme.mp3" variant="velvet"/>
 
       <div className="flex shrink-0 items-center gap-2">
-        <InviteButton/>
+        
+          <p className="font-display text-s text-on-velvet">Код для второй половинки:</p>
+          <InviteButton/>
+       
         <button
           type="button"
           onClick={handleSignOut}
