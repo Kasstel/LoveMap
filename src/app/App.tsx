@@ -65,7 +65,8 @@ function App() {
 
 
   return (
-    <BrowserRouter>
+    // basename: без него Navigate to="/map" уводит на kasstel.github.io/map, мимо приложения
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route
           path="/auth"

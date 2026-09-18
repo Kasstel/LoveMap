@@ -46,7 +46,8 @@ export const Header = ()=>{
 
       </div>
       
-      <PlaylistSlot src="/playlist/theme.mp3" variant="velvet"/>
+      {/* BASE_URL уже со слешем на конце: в dev это "/", на Pages — "/LoveMap/" */}
+      <PlaylistSlot src={`${import.meta.env.BASE_URL}playlist/theme.mp3`} variant="velvet"/>
 
       <div className="flex shrink-0 items-center gap-2">
         

@@ -4,7 +4,6 @@ import { InkFrame } from "../shared/InkFrame"
 import { PaperTexture } from "../shared/PaperTexture"
 import { VelvetField } from "../shared/VelvetField"
 import { VelvetButton } from "../shared/VelvetButton"
-import { InkLoader } from "../shared/InkLoader"
 
 function AuthPage() {
   const [email, setEmail] = useState('')
