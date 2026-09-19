@@ -7,12 +7,17 @@ import { useMapStore } from "../stores/mapStore"
 import { MemoryFormModal } from "../components/map/MemoryFormModal"
 import { Sidebar } from "../components/sidebar/Sidebar"
 import { PaperTexture } from "../components/shared/PaperTexture"
-import { DeckleEdge } from "../components/shared/DeckleEdge"
 import { PassePartout } from "../components/shared/PassePartout"
 import { Counter } from "../components/shared/Counter"
+import { useIsMobileViewport } from "../hooks/useMediaQuery"
+import { ViewportContext } from "../app/viewport"
 
 // TODO: Header + карта + sidebar (Этап 1-2)
 function MainLayout() {
+  // единственный вызов на приложение: ниже значение раздаётся через контекст.
+  // Пока никто не читает — layout меняем следующим шагом
+  const isMobile = useIsMobileViewport()
+
   const coupleId = useMemoryStore((state)=> state.couple?.id)
   const fetchMemories = useMemoryStore((state)=> state.fetchMemories)
   const subscribeToChanges = useMemoryStore((state)=> state.subscribeToChanges)
@@ -35,40 +40,33 @@ function MainLayout() {
     return unsubscribe
   }, [coupleId, fetchMemories, subscribeToChanges])
   return (
-    // бархат на всю страницу — направление kiss.jpg; светлая карта на бордовом и есть приём.
-    // фон и текстура — те же, что на AuthPage (.bg-velvet-page), чтобы экраны не расходились по тону
-    <div className="bg-velvet-page relative h-screen overflow-hidden">
+    // React 19: контекст сам себе провайдер, .Provider больше не нужен.
+    // Значение — примитив, мемоизировать нечего
+    <ViewportContext value={isMobile}>
+    {/* бархат на всю страницу — направление kiss.jpg; светлая карта на бордовом и есть приём.
+        фон и текстура — те же, что на AuthPage (.bg-velvet-page), чтобы экраны не расходились по тону */}
+    <div className="bg-velvet-page relative h-dvh overflow-hidden">
       <PaperTexture variant="velvet" />
       <PassePartout />
 
-      {/* цепочку высот не рвём: h-screen → flex-1 → min-h-0, отступы паспарту висят здесь, а не на MapContainer */}
-      <div className="relative flex h-full flex-col px-9 py-9">
+      {/* цепочку высот не рвём: h-dvh → flex-1 → min-h-0 → MapContainer h-full.
+          Отступы паспарту висят здесь, а не на MapContainer, и только на десктопе */}
+      <div className="relative flex h-full min-h-0 flex-col px-4 py-4 desktop:px-9 desktop:py-9">
         <Header />
-        <div className="flex min-h-0 flex-1 gap-6">
+        <div className="flex min-h-0 flex-1 desktop:gap-6">
           <main className="flex min-h-0 flex-1 flex-col">
             {/* свой positioned-контекст для AddMemoryButton — иначе top/right считались бы от края паспарту, а не от самой карты */}
             <div className="relative min-h-0 flex-1">
               <MapView />
               <AddMemoryButton/>
             </div>
-            <div className="pt-4 text-center">
+            {/* на телефоне счётчик стоит строкой в шапке (Header) */}
+            <div className="hidden pt-4 text-center desktop:block">
               <Counter/>
             </div>
           </main>
-          {/* тень — на внешней обёртке: clip-path у DeckleEdge обрезал бы box-shadow */}
-          <aside className="relative z-10 w-80 shrink-0 shadow-modal">
-            {/* внутренняя тень вдоль торца — эту DeckleEdge не обрезает: inset-тень не выходит за свою же рамку */}
-            <DeckleEdge
-              edges={['left']}
-              className="relative h-full bg-surface shadow-[inset_10px_0_16px_-14px_rgba(74,0,17,0.4)]"
-            >
-              {/* текстура — в нескроллящемся слое: внутри overflow-y-auto она уезжала бы вместе со списком */}
-              <PaperTexture opacity={0.32} className="pointer-events-none absolute inset-0 h-full w-full" />
-              <div className="relative h-full overflow-y-auto p-6">
-                <Sidebar/>
-              </div>
-            </DeckleEdge>
-          </aside>
+          {/* на десктопе это правая страница-aside, на телефоне — лист снизу поверх карты (fixed, вне потока) */}
+          <Sidebar/>
         </div>
       </div>
       {newPinCoords && (
@@ -84,6 +82,7 @@ function MainLayout() {
         />
       )}
     </div>
+    </ViewportContext>
   )
 }
 

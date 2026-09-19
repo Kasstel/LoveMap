@@ -31,17 +31,20 @@
 ```
 src/
 ├── app/App.tsx                 # роутинг + гарды: target = /auth | /setup | /map; сброс сторов при выходе
+├── app/viewport.ts             # ViewportContext (boolean isMobile) + useIsMobile для потребителей
 ├── lib/supabase.ts
 ├── stores/
 │   ├── authStore.ts            # user, loading, initialize, signIn/signUp/signOut (ошибки бросает)
 │   ├── memoryStore.ts          # couple, memories, photos, CRUD, joinCouple, real-time, reset
 │   └── mapStore.ts             # activeMemoryId, activeFilters, isAddingMode, newPinCoords, editingMemoryId, reset
 ├── hooks/useCounter.ts         # дни вместе, перерисовка в полночь
+├── hooks/useMediaQuery.ts      # useMediaQuery + useIsMobileViewport (читает токен --breakpoint-desktop)
 ├── components/
 │   ├── map/                    # MapView, MemoryPin, MemoryPopup, MemoryFormModal (добавление+редактирование),
 │   │                           # AddMemoryButton, AddingModeHandler, NewPinMarker
-│   ├── sidebar/                # Sidebar, MemoryCard
-│   ├── shared/                 # Header, Counter, InviteButton, PhotoUpload, PhotoViewer, EmptyState
+│   ├── sidebar/                # Sidebar (aside на десктопе / BottomSheet на телефоне), MemoryCard
+│   ├── shared/                 # Header, Counter, InviteButton, PhotoUpload, PhotoViewer, EmptyState,
+│   │                           # BottomSheet, PaperTexture, DeckleEdge, InkFrame, PassePartout, PlaylistSlot
 │   ├── setup/WelcomeScreen.tsx # создать пару или войти по коду
 │   └── auth/AuthPage.tsx
 ├── layouts/MainLayout.tsx      # Header + карта + aside; загрузка и подписка; модалки формы
@@ -84,6 +87,7 @@ supabase/
 - Даты: `parseLocalDate` / `toDateInputValue` из utils — не `new Date('YYYY-MM-DD')` и не `toISOString()` (UTC)
 - Leaflet: у карты нужна явная высота по цепочке `h-screen → flex-1 → min-h-0`; `className` у `MapContainer` не менять динамически; хуки react-leaflet только внутри `MapContainer`
 - `.leaflet-popup-content p` перебивает Tailwind 4 (слои) → в попапе только `div`
+- `.leaflet-container` не создаёт своего контекста наложения, поэтому панели Leaflet (`z-index` 400…1000) конкурируют с нашими элементами напрямую. Всё, что ложится поверх карты, начинается с `z-[1000]`: AddMemoryButton 1000, BottomSheet 1000, меню бургера 1050, MemoryFormModal 1100, PhotoViewer 2000. `z-30` уезжает под карту и выглядит как «компонент не отрендерился»
 - PhotoViewer рендерится порталом в body (transform у слоёв Leaflet) и перехватывает клавиши в capture-фазе (иначе Leaflet двигает карту / закрывает попап)
 - MemoryPin: активный по `popupopen`; перелёт только если попап ещё закрыт; `popupclose` сбрасывает выбор только если активен этот пин
 - `@types/react` 19.2: `React.SubmitEvent` вместо устаревшего `FormEvent`
@@ -218,6 +222,30 @@ Stamen Watercolor (через Stadia) отлично попадает в кон�
 
 - **Десктоп** — карта + правый `aside`, как сейчас. У `aside` деккельный край слева и текстура: страница, лежащая поверх карты
 - **Мобильный** — карта во весь экран, список воспоминаний в bottom sheet, форма полноэкранная, Header сжат до логотипа и счётчика
+
+Фундамент готов (layout ещё десктопный):
+- граница — токен `--breakpoint-desktop: 48rem` в `@theme`. В разметке варианты `desktop:` / `max-desktop:`
+- `useIsMobileViewport()` читает этот же токен через `getComputedStyle` — граница в CSS и в JS не расходится. Считается от `min-width` и инвертируется, чтобы ровно на 768px совпадать с вариантом `desktop:`
+- вызывается один раз, в `MainLayout`, значение раздаётся через `ViewportContext`. Компоненты читают `useIsMobile()` — только там, где нужен другой компонент или другие пропсы; разницу в стилях делать классами
+- вне провайдера (AuthPage, WelcomeScreen) `useIsMobile()` вернёт `false`
+
+Header адаптирован (всё на классах, JS только под открытие меню):
+- телефон: логотип + бургер, во второй строке счётчик по центру; InviteButton, «Выйти» и плейлист — в выпадающем меню под бургером
+- меню бархатное (`bg-velvet-deep`): кнопки внутри покрашены под тёмный фон и на бумаге пропали бы
+- на телефоне шапка — три строки: логотип + бургер, счётчик по центру, плейлист по центру с отступом до карты. В меню под бургером (`z-[1050]`) — код приглашения и «Выйти»
+- строка логотип+бургер сдвинута `mt-10 mr-3` (только телефон) — иначе наезжает на угловой росчерк PassePartout (рамка `inset-2` + росчерк `top:4px` высотой 34px = кончается на 46px от края экрана)
+- `Counter` рендерится в двух местах — строкой в шапке (`desktop:hidden`) и под картой в MainLayout (`hidden desktop:block`). На телефоне `primarySize=92` (было 64) — крупнее цифры дней, `max-h-24` — с запасом выше реальной высоты (~79px), иначе `preserveAspectRatio="meet"` поджал бы картинку сильнее, чем задумано
+- у `PairedTitle` размер на экране определяет не сам `primarySize`, а его отношение к ширине viewBox — а ширину почти целиком держит длинная строка-цитата (`secondarySize`). Поднять читаемость цифр можно, либо увеличив `primarySize`, либо укоротив/уменьшив цитату
+- рамка паспарту и отступы под неё есть на обоих устройствах (`px-4 py-4 desktop:px-9 desktop:py-9`). Высота корня — `h-dvh`, не `h-screen`: `100vh` на телефоне считается по экрану без адресной строки
+- `PairedTitle` игнорирует вырожденное измерение: `getBBox()` под `display:none` отдаёт нули, `viewBox` схлопывался в квадрат, и SVG с `height:auto` вырастал в высоту на всю свою ширину — пустой блок в пол-экрана
+
+Sidebar адаптирован — единственное место, где переключение идёт по `useIsMobile()`, а не классами: это разные компоненты, и через `display:none` в дереве висели бы два списка карточек сразу.
+- `Sidebar` сам выбирает оболочку: десктопный `<aside>` (переехал из MainLayout) или `BottomSheet`. Содержимое общее — `SheetHeading`/`SidebarHeading` и `MemoryList` в том же файле
+- `BottomSheet`: состояния peek 80px / half 40dvh / full 85dvh, перетаскивание за ручку на touch-событиях, без библиотек. Тянем **высоту**, а не transform: тогда область прокрутки равна видимой части листа. Высота на старте снимается с элемента через `getBoundingClientRect`, поэтому dvh не переводится в пиксели вручную
+- `dvh`, а не `vh`: `vh` на телефоне считается по экрану без адресной строки и разъезжается с `window.innerHeight`, по которому идёт перетаскивание
+- ручка — `<button>` с `touch-action: none`; click после перетаскивания гасится флагом `movedRef`, иначе состояние переключалось бы дважды
+- бэкдропа нет намеренно: карта под свёрнутым листом остаётся кликабельной
+- деккельного края у листа нет: амплитуда разрыва в `DeckleEdge` задана в долях стороны, и при перетаскивании край «дышал» бы. Вместо него `rounded-t-panel` + `border-t`
 
 Breakpoint'ы закладываем сразу, не откладываем в Этап 4, иначе вёрстку придётся переделывать.
 

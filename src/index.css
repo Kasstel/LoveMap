@@ -58,6 +58,14 @@
   --font-sans: 'Golos Text', ui-sans-serif, system-ui, sans-serif;   /* поля, кнопки, список, попап */
   --font-display: 'Prata', ui-serif, Georgia, serif;                 /* заголовки, логотип — только regular */
   --font-hand: 'Caveat', cursive;                                    /* счётчик дней, подписи под фото, дозированно */
+
+  /* --- граница мобильный/десктоп ---
+     одно значение на CSS и на JS: варианты desktop: / max-desktop: в разметке,
+     хук useIsMobileViewport читает эту же переменную через getComputedStyle.
+     В rem, как и родные брейкпоинты Tailwind: в media-запросе rem считается
+     от базового размера шрифта браузера, поэтому при увеличенном шрифте
+     вёрстка переключится на мобильную раньше — это и нужно */
+  --breakpoint-desktop: 48rem;   /* 768px при стандартных 16px */
 }
 
 /* Бархатный фон экрана — один рецепт на AuthPage и MainLayout,

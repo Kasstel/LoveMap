@@ -64,6 +64,12 @@ export function PairedTitle({
     const boxA = a.getBBox()
     const boxB = b.getBBox()
 
+    // getBBox у невидимого элемента (display:none на любом родителе) возвращает нули.
+    // Тогда viewBox схлопывается в квадратик вокруг нуля, и SVG с height:auto
+    // растягивается в высоту на всю свою ширину — пустой блок во весь экран.
+    // Вырожденное измерение игнорируем, прошлый (или дефолтный) viewBox остаётся в силе
+    if (boxA.width < 1 && boxB.width < 1) return
+
     // объединяем габариты обеих строк, с запасом на обводку маски
     const minX = Math.min(boxA.x, boxB.x) - knockout - PADDING
     const minY = Math.min(boxA.y, boxB.y) - knockout - PADDING
